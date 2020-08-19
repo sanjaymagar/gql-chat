@@ -1,6 +1,9 @@
 server/node_modules/
 client/node_modules/
 home-page/node_modules/
+server/yarn.lock
+client/yarn.lock
+home-page/yarn.lock
 
 
 # Logs
