@@ -3,6 +3,7 @@
 - peer-to-peer chat
 - timestamp
 - display photo
+- data persistent --> completed
 - seen activity
 - online occurance
 - autoscroll to bottom

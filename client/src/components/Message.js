@@ -14,7 +14,6 @@ const GET_MESSAGES = gql`
 export const Message = ({ user }) => {
   const { data } = useSubscription(GET_MESSAGES);
   if (!data) return null;
-  console.log(JSON.stringify(data));
   return (
     <>
       {data.messages.map(({ id, user: currentUser, content }) => (
