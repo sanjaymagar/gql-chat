@@ -23,6 +23,16 @@ const client = new ApolloClient({
   link: wsLink,
 });
 
+// const link = ApolloLink.from([
+//   // new createUploadLink(),
+//   new WebSocketLink({
+//     uri: `ws://localhost:4000/`,
+//     options: {
+//       reconnect: true,
+//     },
+//   }),
+// ]);
+
 const POST_MESSAGE = gql`
   mutation($user: String!, $content: String!) {
     onMessage(user: $user, content: $content)

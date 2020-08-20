@@ -3,7 +3,6 @@ const connectDB = require('./config/db');
 
 const Message = require('./models/schema');
 
-const messages = [];
 const typeDefs = `
   type Message {
     id: ID!
@@ -24,18 +23,16 @@ const typeDefs = `
   }
 `;
 
-const subscribers = [];
-const onMessageUpdates = fn => subscribers.push(fn);
+const channel = Math.random().toString(35).slice(2, 15);
+const messages = async () => await Message.find();
 
 const resolvers = {
   Query: {
     messages: () => messages,
   },
   Mutation: {
-    onMessage: async (_, { user, content }) => {
+    onMessage: async (_, { user, content }, { pubsub }) => {
       const id = messages.length;
-      messages.push({ id, user, content });
-      subscribers.forEach(fn => fn());
       const message = new Message({
         id,
         user,
@@ -45,14 +42,17 @@ const resolvers = {
       // Save message
       await message.save();
 
+      const newMessages = await Message.find();
+      setTimeout(() => pubsub.publish(channel, { messages }), 0);
+      pubsub.publish(channel, { messages: newMessages });
+
       return id;
     },
   },
   Subscription: {
     messages: {
       subscribe: async (_, __, { pubsub }) => {
-        const channel = Math.random().toString(35).slice(2, 15);
-        onMessageUpdates(() => pubsub.publish(channel, { messages }));
+        // Inital state
         setTimeout(() => pubsub.publish(channel, { messages }), 0);
         return pubsub.asyncIterator(channel);
       },
